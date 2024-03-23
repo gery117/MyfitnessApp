@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TextInput } from 'react-native';
 import FoodListItem from '../components/FootListItem';
 
 const foodItems = [
@@ -12,6 +12,7 @@ const foodItems = [
 export default function App() {
   return (
     <View style={styles.container}>
+      <TextInput placeholder='Search...' style={styles.input}/>
       <FlatList
         data={foodItems}
         renderItem ={({item}) => <FoodListItem item={item}/>}
@@ -26,5 +27,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding: 10,
+    gap: 10,
   },
+
+  input:{
+    backgroundColor: '#f2f2f2',
+    padding: 10,
+    borderRadius: 20,
+  }
 });

@@ -21,7 +21,7 @@ type Query {
       configuration: "postgresql_config"
     )
 
-  foodlogsForDate(user_id: String!, date: Date!): [Food_log]
+  foodLogsForDate(user_id: String!, date: Date!): [Food_log]
       @dbquery(
         type: "postgresql"
         query: "SELECT * FROM food_log WHERE user_id = $1 AND DATE(created_at) = $2;"

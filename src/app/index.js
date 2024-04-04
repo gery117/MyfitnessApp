@@ -5,8 +5,8 @@ import {gql, useQuery} from '@apollo/client'
 import dayjs from'dayjs'
 
 const query = gql`
-query MyQuery($date: Date!, $user_id: String!) {
-    foodlogsForDate(date: $date, user_id: $user_id) {
+query foodLogsForDate($date: Date!, $user_id: String!) {
+    foodLogsForDate(date: $date, user_id: $user_id) {
         label
         food_id
         created_at
@@ -17,17 +17,13 @@ query MyQuery($date: Date!, $user_id: String!) {
 }
 `;
 
-const foodItems = [
-    {
-        food: {label: 'Pizza', nutrients:{ENERC_KCAL: 100}, brand: 'Dominos'},
-    },
-];
+
 
 export default function HomeScreen () {
-    const user_id = 'alex';
+    const user_id = 'vadim';
     const {data, loading, error} =useQuery(query, {
         variables: {
-            date: dayjs().format('YYYY-MM-DD'),
+            date: dayjs().subtract(1, 'd').format('YYYY-MM-DD'),
             user_id,
         },
     })
@@ -61,7 +57,7 @@ export default function HomeScreen () {
                 </Link>
             </View>    
             <FlatList
-                data={data.foodlogsForDate}
+                data={data.foodLogsForDate}
                 contentContainerStyle={{gap: 5}}
                 renderItem={({item})=> <FoodLogListItem item = {item}/>}
             

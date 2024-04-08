@@ -45,6 +45,7 @@ export default function HomeScreen () {
                     Calories
                 </Text>
                 <Text>
+                    {data.KcalTotalForDate}
                     1770-360 = 1692
                 </Text>
             </View> 

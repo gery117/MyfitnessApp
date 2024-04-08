@@ -2,10 +2,12 @@ import { StyleSheet, Text, View, FlatList, TextInput, Button, ActivityIndicator 
 import FoodListItem from '../components/FoodListItem';
 import { useState } from 'react';
 import {gql, useLazyQuery} from '@apollo/client'
+import { Ionicons } from '@expo/vector-icons';
+import { Camera, CameraType } from 'expo-camera';
 
 const query = gql`
-query search($ingr: String) {
-  search(ingr: $ingr) {
+query search($ingr: String, $upc: String) {
+  search(ingr: $ingr, upc: $upc) {
     text
     hints {
       food {
@@ -26,8 +28,13 @@ query search($ingr: String) {
 
 export default function SearchScreen() {
   const [search, setSearch] = useState("");
+  const [scannerEnabled, setScannerEnabled] = useState(false);
 
-  const [runSearch,{data, loading, error}]= useLazyQuery(query, {variables: {ingr: 'Pizza'}});
+  const [runSearch,{data, loading, error}]= useLazyQuery(query);
+
+  const [permission, requestPermission] = Camera.useCameraPermissions();
+
+  requestPermission();
 
   const performSearch=()=> {
     console.warn('Searching for: ', search);
@@ -44,16 +51,34 @@ export default function SearchScreen() {
     return <Text>Failed to search</Text>
   }
 
+  if (scannerEnabled){
+    return(
+      <View>
+        <Camera 
+          style = {{width: '100%', height: '100%'}} 
+          onBarCodeScanned={(data)=> {
+          console.log(data)
+          runSearch({variables:{upc: data.data}}); 
+          setScannerEnabled(false);
+          }}/>
+        <Ionicons onPress={()=>setScannerEnabled(false)} name="close" size={35} color="dimgrey" style={{position:'absolute', right: 10, top: 10}} />
+      </View>
+    );
+  }
+
   const items = data?.search?.hints || [];
 
   return (
     <View style={styles.container}>
-      <TextInput 
-        value={search}
-        onChangeText={setSearch}
-        placeholder='Search...' 
-        style={styles.input}
-      />
+      <View style={{flexDirection:'row', alignItems: 'center', gap: 10}}>
+        <TextInput 
+          value={search}
+          onChangeText={setSearch}
+          placeholder='Search...' 
+          style={styles.input}
+        />
+        <Ionicons onPress={()=> setScannerEnabled(true)} name="barcode-outline" size={35} color="dimgray" />
+      </View>
       { search && <Button title ="Search" onPress={performSearch}/>}
 
       
@@ -80,5 +105,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#f2f2f2',
     padding: 10,
     borderRadius: 20,
+    flex: 1,
   }
 });

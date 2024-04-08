@@ -6,12 +6,15 @@ import dayjs from'dayjs'
 
 const query = gql`
 query foodLogsForDate($date: Date!, $user_id: String!) {
-    foodLogsForDate(date: $date, user_id: $user_id) {
-        label
-        food_id
+    KcalTotalForDate(date: $date, user_id: $user_id) {
+        total_kcal
+    }
+    foodLogsForDate(date:$date, user_id: $user_id) {
         created_at
+        food_id
         id
         kcal
+        label
         user_id
     }
 }
@@ -36,17 +39,17 @@ export default function HomeScreen () {
         return <Text>Failed to fetch data</Text>;
     }
 
-    console.log(data);
+    console.log(JSON.stringify(data, null, 2));
 
     return(
         <View style={styles.container}>
             <View style= {styles.headerRow}>
                 <Text style={styles.subtitle}>
-                    Calories
+                    Total Calories
                 </Text>
                 <Text>
-                    {data.KcalTotalForDate}
-                    1770-360 = 1692
+                    {data.KcalTotalForDate.total_kcal}
+                    
                 </Text>
             </View> 
             <View style= {styles.headerRow}>
